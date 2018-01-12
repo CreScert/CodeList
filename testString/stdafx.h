@@ -13,7 +13,11 @@
 
 
 // TODO:  在此处引用程序需要的其他头文件
+// 保存查找
 #include "ChainAdderss.h" // hash散列表 链地址法
-#include "LinearProbing.h"
+#include "LinearProbing.h" // 探测法
+
+// 压缩
+#include "Huffman.h" // 哈夫曼编码压缩
  
  

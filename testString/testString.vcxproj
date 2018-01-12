@@ -147,12 +147,14 @@
   <ItemGroup>
     <ClInclude Include="ChainAdderss.h" />
     <ClInclude Include="CreScertString.h" />
+    <ClInclude Include="Huffman.h" />
     <ClInclude Include="LinearProbing.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ChainAdderss.cpp" />
+    <ClCompile Include="Huffman.cpp" />
     <ClCompile Include="LinearProbing.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
