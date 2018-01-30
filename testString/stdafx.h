@@ -17,7 +17,11 @@
 #include "ChainAdderss.h" // hash散列表 链地址法
 #include "LinearProbing.h" // 探测法
 
+//二叉树
+#include "BinTree.h"
+
 // 压缩
 #include "Huffman.h" // 哈夫曼编码压缩
- 
+#include "HFTree.h"
+
  

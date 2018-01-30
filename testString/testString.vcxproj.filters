@@ -36,6 +36,12 @@
     <ClInclude Include="Huffman.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="BinTree.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="HFTree.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -51,6 +57,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Huffman.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="BinTree.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="HFTree.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

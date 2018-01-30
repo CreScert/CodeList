@@ -36,8 +36,9 @@ template <class T, class Ret> struct LINEARPROBING {
 template <class T,class Ret> class LinearProbing{
 public :
 
-	
+	int capacity = 10;
 
+	int LPSize = 0;
 	LinearProbing();
 	~LinearProbing();
  
@@ -48,7 +49,9 @@ public :
 	Ret deleteKey(T key);
 	Ret queryKey(T key);
 	void queryAll();
-
+	void CheckSize();
+	char *toChar(int);
+	char *toChar(char*);
 	bool cmpKey(T key,int pos);
 
 
@@ -70,10 +73,10 @@ private:
 
 template<class T, class Ret>LinearProbing<T, Ret>::LinearProbing()
 {
-	LinearSize = 10;
+	LinearSize = capacity;
 	MOD = 10;
 	R = 7;
-	LinearTable = (int*)calloc(sizeof(int), LinearSize);
+	LinearTable = (int*)calloc(sizeof(int), LinearSize*sizeof(int));
 }
 
 template<class T, class Ret> LinearProbing<T, Ret>::~LinearProbing()
@@ -85,28 +88,28 @@ template<class T, class Ret> LinearProbing<T, Ret>::~LinearProbing()
 		if (lp != NULL)
 		{
 			free(lp);
+			lp = NULL;
 			count++;
 		}
 	}
 	free(LinearTable);
+	LinearTable = NULL;
 }
 
 // 获取哈希值
 template<class T, class Ret> int LinearProbing<T, Ret>::GetHashValue(T key)
 {
-
-	/*unsigned long h = 0;
-	while (*key)
+	char * nChar = toChar(key);
+	unsigned long h = 0;
+	while (*nChar)
 	{
-	h = (h << 4) + *key++;
+	h = (h << 4) + *nChar++;
 	unsigned long g = h & 0xF0000000L;
 	if (g)
 	h ^= g >> 24;
 	h &= ~g;
 	}
-	return h % MOD;*/
-
-	return key%MOD;
+	return h % MOD;
 }
 
 template<class T, class Ret> Ret LinearProbing<T, Ret>::deleteKey(T key)
@@ -129,6 +132,7 @@ template<class T, class Ret> Ret LinearProbing<T, Ret>::deleteKey(T key)
 		{
 			Ret value = lp->value;
 			LinearTable[pos] = 0;
+			LPSize--;
 			free(lp);
 			return value;
 		}
@@ -160,9 +164,23 @@ template<class T, class Ret> int LinearProbing<T, Ret> ::GetPos(int pos, int n)
 }
 
 
+template<class T, class Ret> char* LinearProbing<T, Ret>::toChar(int key)
+{
+	char *temp = (char*)calloc(sizeof(char*), 3);
+	sprintf_s(temp,sizeof(char*)*3, "%d", key);
+	return temp;
+}
+template<class T, class Ret> char* LinearProbing<T, Ret>::toChar(char* key)
+{
+	return key;
+}
 template<class T, class Ret> int LinearProbing<T, Ret>::GetPos(int pos, int n, T key)
 {
-	return (pos + (n * (R - (key % R)))) % MOD;
+	//int aaa = toChar(key)[0];
+	//cout << aaa << endl;
+	//sprintf(name, "%s", key);
+	//return (pos + (n * (R - (key % R)))) % MOD;
+	return 1;
 }
 // 插入值
 template<class T, class Ret>int LinearProbing<T, Ret>::insert(T key, Ret value)
@@ -175,7 +193,8 @@ template<class T, class Ret>int LinearProbing<T, Ret>::insert(T key, Ret value)
 		struct LINEARPROBING<T,Ret> *lp = (struct LINEARPROBING<T, Ret> *)malloc(sizeof(struct LINEARPROBING<T, Ret>));
 		lp->key = key;
 		lp->value = value;
-
+		LPSize++;
+		CheckSize();
 		LinearTable[hashPos] = (int)lp;
 	}
 	else
@@ -212,7 +231,8 @@ template<class T, class Ret>int LinearProbing<T, Ret>::insert(T key, Ret value)
 					struct LINEARPROBING<T, Ret> * lp = (struct LINEARPROBING<T, Ret>*)malloc(sizeof(struct LINEARPROBING<T, Ret>));
 					lp->key = key;
 					lp->value = value;
-
+					LPSize++;
+					CheckSize();
 					LinearTable[pos] = (int)lp;
 					break;
 				}
@@ -314,7 +334,7 @@ template<class T, class Ret>  struct LINEARPROBING<T,Ret> *LinearProbing<T, Ret>
 // 查询
 template<class T, class Ret> Ret LinearProbing<T, Ret>::queryKey(T key)
 {
-	struct LINEARPROBING *lp = queryList(key);
+	struct LINEARPROBING<T,Ret> *lp = queryList(key);
 	return lp == NULL ? NULL : lp->value;
 }
 
@@ -330,4 +350,50 @@ template<class T, class Ret> void LinearProbing<T, Ret>::queryAll()
 		}
 		cout << endl;
 	}
+}
+
+// 重新分配空间
+template<class T, class Ret>
+inline void LinearProbing<T, Ret>::CheckSize()
+{
+	cout << "表中条目数量:" << LPSize << "表的容量：" << capacity << endl;
+	// 当大小大于了空间的一半时，进行空间 分配
+	if (LPSize >= capacity*3 / 4 )
+	{
+		cout << "重新" << endl;
+		
+		queryAll();
+		int *OldTable = LinearTable;// 保存旧的表。因为要替换
+		int OldSize = LinearSize;//原来表的大小
+		LPSize = 0;
+		
+
+		// 新的容量大小
+		LinearSize = LinearSize + LinearSize;
+		capacity = LinearSize;
+		MOD = capacity;
+		// 新的表
+		LinearTable = (int*)calloc(LinearSize, sizeof(int));
+
+		
+		// 遍历原来的表，将原来的表的内容插入到新的表中
+		for (int i = 0; i < OldSize; i++)
+		{
+			if (OldTable[i] != NULL)
+			{
+				struct LINEARPROBING<T, Ret> *lp = (struct LINEARPROBING<T, Ret> *)OldTable[i];
+				if (lp != NULL)
+				{
+					insert(lp->key, lp->value);
+					free(lp);
+					lp = NULL;
+				}
+			}
+		}
+		 
+		free(OldTable);
+		OldTable = NULL;
+		queryAll();
+	}
+
 }
